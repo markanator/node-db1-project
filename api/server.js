@@ -8,7 +8,14 @@ server.use(express.json());
 
 server.get('/', async (req, res, next) => {
     try {
-        const accounts = await db('accounts');
+        const limit = req.query.limit;
+        const sortby = req.query.sortby || 'id';
+        const sortdir = req.query.sortdir || 'asc';
+        console.log(limit, sortby, sortdir);
+
+        const accounts = await db('accounts')
+            .orderBy(sortby, sortdir)
+            .limit(limit);
 
         return res.status(200).json(accounts);
     } catch (err) {
